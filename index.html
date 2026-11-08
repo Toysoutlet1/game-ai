@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f6f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="GAME AI">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon.svg">
+<title>GAME AI</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6f8;--card:#fff;--ink:#20242b;--muted:#8c929c;--line:#e7e9ed;--accent:#303944}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:720px;height:100dvh;margin:auto;display:flex;flex-direction:column}
+header{padding:calc(13px + env(safe-area-inset-top)) 17px 13px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#fff,#dce1e8);border:1px solid #e5e8ed;display:grid;place-items:center;font-weight:850;font-size:20px;box-shadow:0 3px 12px #1a263508}
+.brand{font-size:18px;font-weight:850;letter-spacing:1.2px}.tag{font-size:10px;color:var(--muted);letter-spacing:.7px;margin-top:3px}.online{margin-left:auto;color:#398765;font-size:11px}
+main{flex:1;overflow:auto;padding:18px 14px 24px;scroll-behavior:smooth}
+.welcome{text-align:center;padding:36px 10px 26px}.orb{height:72px;width:72px;border-radius:25px;margin:auto;display:grid;place-items:center;font-size:31px;background:linear-gradient(145deg,#fff,#e0e4e9);border:1px solid #e7e9ed;box-shadow:0 8px 25px #20242b0c}
+h1{font-size:25px;margin:17px 0 7px}.hint{font-size:13px;color:var(--muted);line-height:1.6}
+.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}.chip{border:1px solid var(--line);background:#fff;color:#59616c;border-radius:20px;padding:9px 12px;font-size:12px}
+.msg{max-width:88%;padding:12px 14px;margin:11px 0;border-radius:17px;font-size:15px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.assistant{background:#fff;border:1px solid var(--line);margin-right:auto}.user{background:#e8ebef;margin-left:auto}
+.composer{background:#fff;border-top:1px solid var(--line);padding:11px 12px calc(13px + env(safe-area-inset-bottom))}
+.entry{display:flex;gap:8px;align-items:center;padding:6px;background:#f4f5f7;border:1px solid #e7e9ed;border-radius:18px}
+input{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:10px 8px;font-size:16px;color:var(--ink)}
+.send{border:0;border-radius:13px;background:#303944;color:white;padding:11px 15px;font-size:14px;font-weight:650}.send:disabled{opacity:.45}
+.small{text-align:center;color:#a0a5ad;font-size:10px;margin-top:8px}
+.toolbar{display:flex;justify-content:flex-end;margin-top:7px}.clear{background:transparent;border:0;color:#8a9099;font-size:11px;padding:5px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="logo">G</div>
+ <div><div class="brand">GAME AI</div><div class="tag">YOUR PERSONAL AI ASSISTANT</div></div>
+ <div class="online">● READY</div>
+</header>
+<main id="chat">
+ <section class="welcome" id="welcome">
+  <div class="orb">✦</div><h1>สวัสดีครับ 👋</h1>
+  <div class="hint">ผมคือ GAME AI ผู้ช่วยส่วนตัวของคุณ<br>อยากให้ช่วยเรื่องอะไร ลองพิมพ์ถามได้เลย</div>
+  <div class="suggestions">
+   <button class="chip" data-prompt="ช่วยแปลข้อความนี้เป็นภาษาอังกฤษ">แปลภาษา</button>
+   <button class="chip" data-prompt="ช่วยสอนเขียนโค้ดสำหรับมือใหม่">เขียนโค้ด</button>
+   <button class="chip" data-prompt="ช่วยวางแผนงานวันนี้ให้หน่อย">วางแผนงาน</button>
+  </div>
+ </section>
+</main>
+<footer class="composer">
+ <div class="entry"><input id="prompt" placeholder="ถามอะไรกับ GAME AI..." autocomplete="off"><button class="send" id="send">ส่ง ↑</button></div>
+ <div class="toolbar"><button class="clear" id="clear">ล้างประวัติแชท</button></div>
+ <div class="small">คำตอบจาก AI อาจผิดพลาดได้ โปรดตรวจสอบข้อมูลสำคัญ</div>
+</footer>
+</div>
+<script>
+const API_URL = "./api"; // ใช้ Worker URL เดียวกันโดเมนเดียวกันผ่าน Pages Function หรือเปลี่ยนเป็น Worker URL
+const chat=document.getElementById("chat"),input=document.getElementById("prompt"),send=document.getElementById("send");
+let history=[];try{history=JSON.parse(localStorage.getItem("game-ai-history")||"[]")}catch{history=[]}
+function addBubble(content,role){document.getElementById("welcome")?.remove();const d=document.createElement("div");d.className="msg "+(role==="user"?"user":"assistant");d.textContent=content;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+history.forEach(m=>addBubble(m.content,m.role));
+async function ask(){const q=input.value.trim();if(!q||send.disabled)return;addBubble(q,"user");input.value="";history.push({role:"user",content:q});send.disabled=true;const wait=addBubble("GAME AI กำลังคิด...","assistant");
+try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history.slice(-12)})});if(!r.ok)throw new Error("HTTP "+r.status);const data=await r.json();const answer=data.response||data.reply||data.result||"ยังไม่ได้รับคำตอบ";wait.textContent=answer;history.push({role:"assistant",content:answer});history=history.slice(-30);localStorage.setItem("game-ai-history",JSON.stringify(history))}
+catch(e){wait.textContent="ยังเชื่อมต่อ AI ไม่สำเร็จ ต้องตั้งค่า Worker URL และ AI binding ก่อนครับ";history.pop()}
+finally{send.disabled=false;input.focus()}}
+send.addEventListener("click",ask);input.addEventListener("keydown",e=>{if(e.key==="Enter")ask()});
+document.querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>{input.value=b.dataset.prompt;ask()}));
+document.getElementById("clear").addEventListener("click",()=>{history=[];localStorage.removeItem("game-ai-history");chat.innerHTML='<section class="welcome" id="welcome"><div class="orb">✦</div><h1>สวัสดีครับ 👋</h1><div class="hint">ผมคือ GAME AI ผู้ช่วยส่วนตัวของคุณ<br>อยากให้ช่วยเรื่องอะไร ลองพิมพ์ถามได้เลย</div></section>'});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body></html>
