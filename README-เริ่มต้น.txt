@@ -9,7 +9,7 @@ GAME AI — ชุดเริ่มต้นสำหรับ iPhone
 
 ข้อจำกัดสำคัญ:
 1) หน้านี้ยังไม่ตอบด้วย AI จนกว่าจะเผยแพร่ worker.js และเชื่อม Workers AI binding ชื่อ AI
-2) ใน index.html ต้องเปลี่ยน API_URL จาก "./api" เป็น URL ของ Cloudflare Worker ที่ได้หลัง Deploy เช่น https://ชื่อ-worker.ชื่อบัญชี.workers.dev
+2) ตั้งค่า API_URL ใน index.html เป็น https://game-ai.dawaruto2020.workers.dev ไว้แล้ว
 3) อย่าใส่ API token หรือรหัสผ่านลงใน index.html หรือส่งให้ผู้อื่น
 4) Workers AI มีโควต้า/ข้อจำกัดตามบัญชีและรุ่นโมเดล อาจมีการเปลี่ยนแปลง
 5) การใช้ GitHub Pages ต้องเปิด Pages จาก Settings > Pages > Deploy from a branch > main > /(root)
@@ -22,7 +22,7 @@ D. เปิด GitHub Pages ตามด้านบน
 E. เปิด Cloudflare Dashboard ใน Safari > Workers & Pages > Create > Worker แล้วสร้าง Worker
 F. วางโค้ด worker.js ใน editor ของ Worker แล้ว Deploy
 G. ใน Worker Settings > Bindings เพิ่ม Workers AI binding ชื่อ AI แล้วบันทึก/Deploy ใหม่
-H. คัดลอก URL ของ Worker แล้วกลับไปแก้ index.html เปลี่ยน API_URL เป็น URL นั้น จากนั้น Commit การแก้ไข
+H. ไฟล์ index.html ในชุดนี้ตั้งค่า API_URL เป็น URL Worker ของคุณแล้ว หาก URL Worker เปลี่ยน ให้แก้ API_URL ใน index.html แล้ว Commit อีกครั้ง
 I. เปิด URL GitHub Pages ใน Safari > Share > Add to Home Screen
 
 หมายเหตุ:

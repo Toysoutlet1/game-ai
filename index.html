@@ -56,7 +56,7 @@ input{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:10px 
 </footer>
 </div>
 <script>
-const API_URL = "./api"; // ใช้ Worker URL เดียวกันโดเมนเดียวกันผ่าน Pages Function หรือเปลี่ยนเป็น Worker URL
+const API_URL = "https://game-ai.dawaruto2020.workers.dev"; // Cloudflare Worker URL
 const chat=document.getElementById("chat"),input=document.getElementById("prompt"),send=document.getElementById("send");
 let history=[];try{history=JSON.parse(localStorage.getItem("game-ai-history")||"[]")}catch{history=[]}
 function addBubble(content,role){document.getElementById("welcome")?.remove();const d=document.createElement("div");d.className="msg "+(role==="user"?"user":"assistant");d.textContent=content;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
